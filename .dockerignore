@@ -1,0 +1,4 @@
+assets
+node_modules
+vendor
+.envrc
