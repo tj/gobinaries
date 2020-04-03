@@ -1,4 +1,4 @@
 echo
-echo "  \x1b[38;5;125mError:\x1b[0;00m {{.}}"
+printf "  \033[38;5;125mError:\033[0;00m {{.}}\n"
 echo
 exit 1

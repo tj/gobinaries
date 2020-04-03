@@ -5,16 +5,16 @@ set -e
 # Some utilities from https://github.com/client9/shlib
 
 echoerr() {
-  echo "$@" 1>&2
+  printf "$@\n" 1>&2
 }
 
 log_info() {
-  echo "\x1b[38;5;61m  ==>\x1b[0;00m $@"
+  printf "\033[38;5;61m  ==>\033[0;00m $@\n"
 }
 
 log_crit() {
   echoerr
-  echoerr "  \x1b[38;5;125m$@\x1b[0;00m"
+  echoerr "  \033[38;5;125m$@\033[0;00m"
   echoerr
 }
 
