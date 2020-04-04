@@ -14,6 +14,28 @@ import (
 	"github.com/tj/gobinaries"
 )
 
+// environMap returns a map of environment variables.
+var environMap map[string]string
+
+// init initializes the environment variable map.
+func init() {
+	environMap = make(map[string]string)
+	for _, v := range os.Environ() {
+		parts := strings.Split(v, "=")
+		environMap[parts[0]] = parts[1]
+	}
+}
+
+// environWhitelist is a list of environment variables to include in Go sub-commands.
+var environWhitelist = []string{
+	"PATH",
+	"HOME",
+	"PWD",
+	"GOPATH",
+	"GOLANG_VERSION",
+	"TMPDIR",
+}
+
 // ErrNotExecutable is returned when the package path provided does not produce a binary.
 var ErrNotExecutable = errors.New("not executable")
 
@@ -115,7 +137,7 @@ func isExecutable(mode os.FileMode) bool {
 // semver, awkward UX but oh well.
 func addModule(dir string) error {
 	cmd := exec.Command("go", "mod", "init", "github.com/gobinary")
-	cmd.Env = os.Environ()
+	cmd.Env = environ()
 	cmd.Env = append(cmd.Env, "GO111MODULE=on")
 	cmd.Dir = dir
 	return command(cmd)
@@ -124,7 +146,7 @@ func addModule(dir string) error {
 // addModuleDep creates a module dependency.
 func addModuleDep(dir, dep string) error {
 	cmd := exec.Command("go", "mod", "edit", "-require", dep)
-	cmd.Env = os.Environ()
+	cmd.Env = environ()
 	cmd.Env = append(cmd.Env, "GO111MODULE=on")
 	cmd.Dir = dir
 	return command(cmd)
@@ -134,7 +156,7 @@ func addModuleDep(dir, dep string) error {
 func buildBinary(dir, dst string, bin gobinaries.Binary) error {
 	ldflags := fmt.Sprintf("-X main.version=%s", bin.Version)
 	cmd := exec.Command("go", "build", "-o", dst, "-ldflags", ldflags, bin.Path)
-	cmd.Env = os.Environ()
+	cmd.Env = environ()
 	cmd.Env = append(cmd.Env, "GO111MODULE=on")
 	cmd.Env = append(cmd.Env, "GOOS="+bin.OS)
 	cmd.Env = append(cmd.Env, "GOARCH="+bin.Arch)
@@ -165,4 +187,12 @@ func tempFilename() (string, error) {
 	defer f.Close()
 	defer os.Remove(f.Name())
 	return f.Name(), nil
+}
+
+// environ returns the environment variables for Go sub-commands.
+func environ() (env []string) {
+	for _, name := range environWhitelist {
+		env = append(env, name+"="+environMap[name])
+	}
+	return
 }
