@@ -3,22 +3,14 @@ package gobinaries
 
 import (
 	"context"
-	"errors"
 	"io"
+
+	"github.com/tj/gobinaries/resolver"
 )
-
-// ErrObjectNotFound is returned by Storage.Get() when no object is found for the specified key.
-var ErrObjectNotFound = errors.New("no cloud storage object")
-
-// ErrNoVersionMatch is returned by Resolver.Resolve() when no tag matches the requested version.
-var ErrNoVersionMatch = errors.New("no matching version")
-
-// ErrNoVersions is returned by Resolver.Resolve() when no versions are defined.
-var ErrNoVersions = errors.New("no versions defined")
 
 // Resolver is the interface used to resolver package versions.
 type Resolver interface {
-	Resolve(owner, repo, version string) (string, error)
+	Resolve(repo resolver.Repository) (string, error)
 }
 
 // Storage is the interface used for storing compiled Go binaries.

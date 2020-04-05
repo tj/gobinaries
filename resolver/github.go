@@ -7,7 +7,6 @@ import (
 
 	"github.com/google/go-github/v28/github"
 
-	"github.com/tj/gobinaries"
 	"github.com/tj/gobinaries/semver"
 )
 
@@ -19,9 +18,9 @@ type GitHub struct {
 }
 
 // Resolve implementation.
-func (g *GitHub) Resolve(owner, repo, version string) (string, error) {
+func (g *GitHub) Resolve(repo Repository) (string, error) {
 	// fetch tags
-	tags, err := g.versions(owner, repo)
+	tags, err := g.versions(repo.Owner, repo.Project)
 	if err != nil {
 		return "", err
 	}
@@ -35,12 +34,12 @@ func (g *GitHub) Resolve(owner, repo, version string) (string, error) {
 	}
 
 	// master special-case
-	if version == "master" {
+	if repo.Version == "master" {
 		return versions[0].String(), nil
 	}
 
 	// match requested semver range
-	vr, err := semver.ParseRange(version)
+	vr, err := semver.ParseRange(repo.Version)
 	if err != nil {
 		return "", fmt.Errorf("parsing version range: %w", err)
 	}
@@ -51,7 +50,7 @@ func (g *GitHub) Resolve(owner, repo, version string) (string, error) {
 		}
 	}
 
-	return "", gobinaries.ErrNoVersionMatch
+	return "", ErrNoVersionMatch
 }
 
 // versions returns the versions of a repository.
@@ -84,7 +83,7 @@ func (g *GitHub) versions(owner, repo string) (versions []string, err error) {
 	}
 
 	if len(versions) == 0 {
-		return nil, gobinaries.ErrNoVersions
+		return nil, ErrNoVersions
 	}
 
 	return

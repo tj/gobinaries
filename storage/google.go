@@ -54,7 +54,7 @@ func (g *Google) Get(ctx context.Context, bin gobinaries.Binary) (io.ReadCloser,
 	r, err := obj.NewReader(ctx)
 
 	if isNotExists(err) {
-		return nil, gobinaries.ErrObjectNotFound
+		return nil, ErrObjectNotFound
 	}
 
 	return r, nil

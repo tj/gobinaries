@@ -19,6 +19,7 @@ import (
 
 	"github.com/tj/gobinaries"
 	"github.com/tj/gobinaries/build"
+	"github.com/tj/gobinaries/resolver"
 )
 
 // Server is the binary server.
@@ -110,28 +111,33 @@ func (s *Server) getScript(w http.ResponseWriter, r *http.Request) {
 	}
 
 	owner := parts[1]
-	repo := parts[2]
+	project := parts[2]
 
 	logs := log.WithFields(log.Fields{
 		"ip":      r.Header.Get("CF-Connecting-IP"),
 		"package": pkg,
 		"module":  mod,
 		"owner":   owner,
-		"repo":    repo,
+		"repo":    project,
 		"binary":  bin,
 		"version": version,
 	})
 
 	logs.Info("resolving version")
-	resolved, err := s.Resolver.Resolve(owner, repo, version)
+	repo := resolver.Repository{
+		Owner:   owner,
+		Project: project,
+		Version: version,
+	}
+	resolved, err := s.Resolver.Resolve(repo)
 
-	if err == gobinaries.ErrNoVersions {
+	if err == resolver.ErrNoVersions {
 		logs.Warn("no tags")
 		s.render(w, "error.sh", "Repository has no tags")
 		return
 	}
 
-	if err == gobinaries.ErrNoVersionMatch {
+	if err == resolver.ErrNoVersionMatch {
 		logs.Warn("no match")
 		s.render(w, "error.sh", "Repository has no tags matching the requested version")
 		return

@@ -75,7 +75,7 @@ func TestGoogle_Get(t *testing.T) {
 		}
 
 		_, err := s.Get(ctx, bin)
-		assert.Equal(t, gobinaries.ErrObjectNotFound, err)
+		assert.Equal(t, storage.ErrObjectNotFound, err)
 	})
 }
 
