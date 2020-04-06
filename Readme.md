@@ -9,7 +9,7 @@
 Install `PKG` with optional semver `VERSION`.
 
 ```
-curl -sf https://gobinaries.com/<PKG>[@VERSION] | sudo sh
+curl -sf https://gobinaries.com/<PKG>[@VERSION] | sh
 ```
 
 Install `PKG` with optional semver `VERSION` to the given directory `PREFIX`. By default `/usr/local/bin` is used.
@@ -25,31 +25,31 @@ The `github.com` path prefix is optional.
 Install the `hey` HTTP benchmarking tool:
 
 ```sh
-curl -sf https://gobinaries.com/rakyll/hey | sudo sh
+curl -sf https://gobinaries.com/rakyll/hey | sh
 ```
 
 Install the `wuzz` HTTP client:
 
 ```sh
-curl -sf https://gobinaries.com/asciimoo/wuzz | sudo sh
+curl -sf https://gobinaries.com/asciimoo/wuzz | sh
 ```
 
 Install the latest version of `staticgen`:
 
 ```
-curl -sf https://gobinaries.com/tj/staticgen/cmd/staticgen | sudo sh
+curl -sf https://gobinaries.com/tj/staticgen/cmd/staticgen | sh
 ```
 
 Install the latest `1.x` major version of `staticgen`:
 
 ```
-curl -sf https://gobinaries.com/tj/staticgen/cmd/staticgen@1.x | sudo sh
+curl -sf https://gobinaries.com/tj/staticgen/cmd/staticgen@1.x | sh
 ```
 
 Install the `v1.0.0` version of `triage`:
 
 ```
-curl -sf https://gobinaries.com/tj/triage/cmd/triage@1.0.0 | sudo sh
+curl -sf https://gobinaries.com/tj/triage/cmd/triage@1.0.0 | sh
 ```
 
 ## Semver support
@@ -66,7 +66,7 @@ The following semver patterns are supported:
 Take for example you want to install @rakyll's fantastic HTTP benchmarking tool [hey](https://gobinaries.com/rakyll/hey), to install the latest release you would run:
 
 ```sh
-curl -sf https://gobinaries.com/rakyll/hey | sudo sh
+curl -sf https://gobinaries.com/rakyll/hey | sh
 ```
 
 This request fetches the latest tag from GitHub and responds with a shell script
