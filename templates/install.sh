@@ -175,8 +175,14 @@ start() {
   log_info "Downloading binary for $os $arch"
   http_download $tmp "$api/binary/$pkg?os=$os&arch=$arch&version=$version"
 
+  if [ -w "$prefix" ]; then
   log_info "Installing $bin to $prefix"
-  sudo install "$tmp" "$prefix"
+    install "$tmp" "$prefix"
+  else
+    log_info "Permissions required for installation to $prefix — alternatively specify a new directory with:"
+    log_info "  $ curl -sf https://gobinaries.com/$pkg@$version | PREFIX=. sh"
+    sudo install "$tmp" "$prefix"
+  fi
 
   log_info "Installation complete"
   echo
