@@ -34,6 +34,11 @@ func (g *GitHub) Resolve(owner, repo, version string) (string, error) {
 		}
 	}
 
+	// no versions, it has tags but they're not semver
+	if len(versions) == 0 {
+		return "", gobinaries.ErrNoVersions
+	}
+
 	// master special-case
 	if version == "master" {
 		return versions[0].String(), nil
