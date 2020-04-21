@@ -26,7 +26,7 @@ func (v Version) String() string {
 func Parse(s string) (Version, error) {
 	p := strings.Split(strings.TrimPrefix(s, "v"), ".")
 
-	if len(p) < 3 {
+	if len(p) < 2 {
 		return Version{}, ErrMalformed
 	}
 
@@ -40,9 +40,12 @@ func Parse(s string) (Version, error) {
 		return Version{}, ErrMalformed
 	}
 
-	patch, err := strconv.ParseUint(p[2], 10, 64)
-	if err != nil {
-		return Version{}, ErrMalformed
+	var patch uint64
+	if len(p) > 2 {
+		patch, err = strconv.ParseUint(p[2], 10, 64)
+		if err != nil {
+			return Version{}, ErrMalformed
+		}
 	}
 
 	return Version{

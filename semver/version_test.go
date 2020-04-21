@@ -21,8 +21,9 @@ func TestParse(t *testing.T) {
 	})
 
 	t.Run("missing patch", func(t *testing.T) {
-		_, err := semver.Parse("1.2")
-		assert.Equal(t, err, semver.ErrMalformed)
+		v, err := semver.Parse("1.2")
+		assert.NoError(t, err)
+		assert.Equal(t, semver.Version{Major: 1, Minor: 2, Patch: 0, Input: "1.2"}, v)
 	})
 
 	t.Run("valid", func(t *testing.T) {
