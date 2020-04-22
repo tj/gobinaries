@@ -5,7 +5,7 @@ go 1.13
 require (
 	cloud.google.com/go/storage v1.6.0
 	github.com/apex/httplog v1.0.0
-	github.com/apex/log v1.1.2
+	github.com/apex/log v1.1.3
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/google/go-github/v28 v28.1.1
 	github.com/kr/pretty v0.2.0 // indirect
