@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/google/go-github/v28/github"
+	"github.com/tj/go-semver"
 
 	"github.com/tj/gobinaries"
-	"github.com/tj/gobinaries/semver"
 )
 
 // GitHub is an implementation of Versioner for
