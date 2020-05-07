@@ -1,8 +1,19 @@
 package server
 
 import (
+	"fmt"
+	"strconv"
 	"strings"
 )
+
+// getMajorVersion tries to detect the major version of the package.
+func getMajorVersion(tag string) (int, error) {
+	major := strings.Split(tag, ".")[0]
+	if len(major) < 1 {
+		return 0, fmt.Errorf("invalid major version")
+	}
+	return strconv.Atoi(major[1:])
+}
 
 // parsePackage returns package information parsed from the path.
 func parsePackage(path string) (pkg, mod, version, bin string) {
