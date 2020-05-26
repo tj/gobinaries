@@ -4,6 +4,7 @@ package server
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -145,6 +146,17 @@ func (s *Server) getScript(w http.ResponseWriter, r *http.Request) {
 
 	logs = logs.WithField("resolved", resolved)
 	logs.Info("resolved version")
+
+	// rename package into go mod compatible name if v2 and above
+	major, err := getMajorVersion(resolved)
+	if err == nil && major > 1 {
+		modp := strings.Split(pkg, "/")
+		if len(modp) >= 3 {
+			mod := strings.Join(modp[:3], "/")
+			nested := strings.Join(modp[3:], "/")
+			pkg = fmt.Sprintf("%s/v%d/%s", mod, major, nested)
+		}
+	}
 
 	s.render(w, "install.sh", struct {
 		URL             string

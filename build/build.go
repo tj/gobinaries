@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/tj/gobinaries"
@@ -71,7 +72,7 @@ func Write(w io.Writer, bin gobinaries.Binary) error {
 	}
 
 	// add the dependency
-	err = addModuleDep(dir, bin.Module+"@"+bin.Version)
+	err = addModuleDep(dir, normalizeModuleDep(bin))
 	if err != nil {
 		return fmt.Errorf("adding dependency: %w", err)
 	}
@@ -141,6 +142,29 @@ func addModule(dir string) error {
 	cmd.Env = append(cmd.Env, "GO111MODULE=on")
 	cmd.Dir = dir
 	return command(cmd)
+}
+
+// getMajorVersion tries to detect the major version of the package.
+func getMajorVersion(tag string) (int, error) {
+	major := strings.Split(tag, ".")[0]
+	if len(major) < 1 {
+		return 0, fmt.Errorf("invalid major version")
+	}
+	return strconv.Atoi(major[1:])
+}
+
+// normalizeModuleDep returns a normalized module dependency.
+func normalizeModuleDep(bin gobinaries.Binary) string {
+	mod := bin.Module
+	version := bin.Version
+	var dep string
+	major, err := getMajorVersion(version)
+	if err == nil && major > 1 {
+		dep = fmt.Sprintf("%s/v%d@%s", mod, major, version)
+	} else {
+		dep = fmt.Sprintf("%s@%s", mod, version)
+	}
+	return dep
 }
 
 // addModuleDep creates a module dependency.
