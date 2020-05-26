@@ -153,6 +153,7 @@ func getMajorVersion(tag string) (int, error) {
 	return strconv.Atoi(major[1:])
 }
 
+// normalizeModuleDep returns a normalized module dependency.
 func normalizeModuleDep(bin gobinaries.Binary) string {
 	mod := bin.Module
 	version := bin.Version
