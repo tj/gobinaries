@@ -181,6 +181,7 @@ func buildBinary(dir, dst string, bin gobinaries.Binary) error {
 	ldflags := fmt.Sprintf("-X main.version=%s", bin.Version)
 	cmd := exec.Command("go", "build", "-o", dst, "-ldflags", ldflags, bin.Path)
 	cmd.Env = environ()
+	cmd.Env = append(cmd.Env, "CGO_ENABLED=0")
 	cmd.Env = append(cmd.Env, "GO111MODULE=on")
 	cmd.Env = append(cmd.Env, "GOOS="+bin.OS)
 	cmd.Env = append(cmd.Env, "GOARCH="+bin.Arch)
