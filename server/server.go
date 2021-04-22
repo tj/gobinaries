@@ -158,7 +158,7 @@ func (s *Server) getScript(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	s.render(w, "install.sh", struct {
+	templateData := struct {
 		URL             string
 		Package         string
 		Binary          string
@@ -170,7 +170,13 @@ func (s *Server) getScript(w http.ResponseWriter, r *http.Request) {
 		Binary:          bin,
 		OriginalVersion: version,
 		Version:         resolved,
-	})
+	}
+	useragent := r.Header.Get("User-Agent")
+	if strings.Contains(strings.ToUpper(useragent), strings.ToUpper("POWERSHELL")) {
+		s.render(w, "install.ps1", templateData)
+	} else {
+		s.render(w, "install.sh", templateData)
+	}
 }
 
 // getBinary builds and responds with the requested package binary,
