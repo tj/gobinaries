@@ -172,7 +172,10 @@ func (s *Server) getScript(w http.ResponseWriter, r *http.Request) {
 		Version:         resolved,
 	}
 	useragent := r.Header.Get("User-Agent")
-	if strings.Contains(strings.ToUpper(useragent), strings.ToUpper("POWERSHELL")) {
+	ispowershell := strings.Contains(strings.ToUpper(useragent), strings.ToUpper("POWERSHELL"))
+	iswindows := strings.Contains(strings.ToUpper(useragent), strings.ToUpper("WINDOWS"))
+
+	if ispowershell && iswindows {
 		s.render(w, "install.ps1", templateData)
 	} else {
 		s.render(w, "install.sh", templateData)
