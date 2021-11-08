@@ -191,6 +191,11 @@ func (s *Server) getBinary(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	cgo := request.Param(r, "cgo")
+	if cgo == "" {
+		cgo = "0"
+	}
+
 	goos := request.Param(r, "os")
 	if goos == "" {
 		response.BadRequest(w, "`os` parameter required")
@@ -214,12 +219,14 @@ func (s *Server) getBinary(w http.ResponseWriter, r *http.Request) {
 		"ip":      r.Header.Get("CF-Connecting-IP"),
 		"package": pkg,
 		"module":  mod,
+		"cgo":  cgo,
 		"os":      goos,
 		"arch":    arch,
 		"version": version,
 	})
 
 	bin := gobinaries.Binary{
+		CGO: cgo,
 		Path:    pkg,
 		Module:  mod,
 		Version: version,
