@@ -181,7 +181,11 @@ func (s *Server) getScript(w http.ResponseWriter, r *http.Request) {
 // - version
 //
 // For example "github.com/tj/triage/cmd/triage?os=linux&arch=amd64&version=1.0.0".
+// And not required:
 //
+// - cgo = default 0
+//
+// For example "github.com/tj/triage/cmd/triage?os=linux&arch=amd64&cgo=1&version=1.0.0".
 func (s *Server) getBinary(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 	pkg := strings.TrimPrefix(r.URL.Path, "/")
