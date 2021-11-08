@@ -181,7 +181,11 @@ func (s *Server) getScript(w http.ResponseWriter, r *http.Request) {
 // - version
 //
 // For example "github.com/tj/triage/cmd/triage?os=linux&arch=amd64&version=1.0.0".
+// And not required:
 //
+// - cgo = default 0
+//
+// For example "github.com/tj/triage/cmd/triage?os=linux&arch=amd64&cgo=1&version=1.0.0".
 func (s *Server) getBinary(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 	pkg := strings.TrimPrefix(r.URL.Path, "/")
@@ -189,6 +193,11 @@ func (s *Server) getBinary(w http.ResponseWriter, r *http.Request) {
 	if pkg == "" {
 		response.BadRequest(w)
 		return
+	}
+
+	cgo := request.Param(r, "cgo")
+	if cgo == "" {
+		cgo = "0"
 	}
 
 	goos := request.Param(r, "os")
@@ -214,12 +223,14 @@ func (s *Server) getBinary(w http.ResponseWriter, r *http.Request) {
 		"ip":      r.Header.Get("CF-Connecting-IP"),
 		"package": pkg,
 		"module":  mod,
+		"cgo":  cgo,
 		"os":      goos,
 		"arch":    arch,
 		"version": version,
 	})
 
 	bin := gobinaries.Binary{
+		CGO: cgo,
 		Path:    pkg,
 		Module:  mod,
 		Version: version,
